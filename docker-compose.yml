@@ -1,0 +1,30 @@
+services:
+  frontend:
+    build: ./frontend/react-crud
+    ports: 
+      - "3000:80"
+    container_name: frontend-app
+  backend:
+    build: ./backend/springboot-mongodb-crud
+    ports:
+      - "8080:8080"
+    container_name: backend-app
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://root:pass@mongodb:27017/mydb?authSource=admin
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6
+    container_name: mongo-db    
+    ports: 
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_DATABASE=mydb
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
